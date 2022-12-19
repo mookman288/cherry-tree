@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CherryTree &mdash; Link Builder for Neocities &amp; More &mdash; PxO Ink LLC</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css" />
+		<style type="text/css">
+			code {display: block; overflow: scroll;}
+		</style>
+	</head>
+	<body>
+		<header class="container">
+			<h1>CherryTree</h1>
+			<h2>Link Building Generator by PxO Ink LLC</h2>
+			<p>
+				Cherry Tree allows you to quickly generate a simple HTML and CSS template to be used with sites like
+				<a href="https://neocities.org" target="_blank" rel="noopener">NeoCities</a>. If you use NeoCities
+				heavily, consider <a href="https://neocities.org/supporter" target="_blank" rel="noopener">supporting</a>
+				them.
+			</p>
+			<p>
+				The default CSS framework used is MinStyle, which has a built-in dark mode. The generated template uses
+				UTF-8, so you can use emoticons in your links. You can view a wide variety of options at
+				<a href="https://emojipedia.org/" target="_blank" rel="noopener">Emojipedia</a>.
+			</p>
+		</header>
+		<main class="container">
+			<noscript>This app uses JavaScript to generate your links. Please enable JavaScript to continue.</noscript>
+			<form>
+				<h3>Page Settings</h3>
+				<div class="ms-form-group">
+					<label for="title">Page Title</label>
+					<input id="title" name="title" type="text" />
+				</div>
+				<div class="ms-form-group">
+					<label for="tagline">Tagline</label>
+					<input id="tagline" name="tagline" type="text" />
+				</div>
+				<div class="ms-form-group">
+					<label for="description">Description</label>
+					<textarea id="description" name="description" rows="5"></textarea>
+				</div>
+				<div class="ms-form-group ms-text-right">
+					<button id="addLink" class="ms-btn ms-action">Add Link</button>
+				</div>
+				<template id="linkTemplate">
+					<div id="linkContainer" class="linkContainer">
+						<div class="ms-form-group">
+							<label for="link">Link</label>
+							<div class="row align-items-center">
+								<div class="col">
+									<input id="link" name="link" type="text" />
+								</div>
+								<div class="col-auto">
+									<input id="bgColor" name="bgColor" type="color" value="#009DDF" />
+								</div>
+							</div>
+						</div>
+						<div class="ms-form-group">
+							<label for="text">Link Text</label>
+							<div class="row align-items-center">
+								<div class="col">
+									<input id="text" name="text" type="text" />
+								</div>
+								<div class="col-auto">
+									<input id="textColor" name="textColor" type="color" value="#FFFFFF" />
+								</div>
+							</div>
+						</div>
+						<div class="ms-form-group ms-text-right">
+							<button id="removeLink" class="ms-btn ms-action2">Remove Link</button>
+						</div>
+					</div>
+				</template>
+				<div id="linkContainer">
+
+				</div>
+				<div class="ms-form-group">
+					<input type="submit" value="Generate" class="ms-secondary" />
+				</div>
+			</form>
+<pre style="display: none;"><code>
+</code></pre>
+		</main>
+		<footer class="container ms-text-center">
+			<p>Copyright &copy; PxO Ink LLC &mdash; Some Rights Reserved. <a href="https://github.com/mookman288/cherry-tree" target="_blank" rel="noopener">GitHub</a></p>
+		</footer>
+		<template id="cherryTreeHead"><div>
+		<title></title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css" />
+		<style type="text/css">
+			.ms-btn {margin-bottom: 1rem; transition: background 1s;}
+		</style>
+		</div></template>
+		<template id="cherryTreeBody"><div>
+		<header class="container ms-text-center">
+			<h1></h1>
+			<h2></h2>
+		</header>
+		<main class="container ms-text-center">
+		</main>
+		<footer class="container ms-text-center">
+			<small>
+				<a href="https://www.pxoink.net/projects/cherrytree" target="_blank" rel="noopener">Built with CherryTree</a>
+			</small>
+		</footer>
+		</div></template>
+		<script src="https://code.jquery.com/jquery-3.6.2.min.js"></script>
+		<script>
+			//https://stackoverflow.com/a/57401891/1617361
+			function adjustColor(color, amount) {
+				return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+			}
+
+			(function($) {
+				let count = 0;
+
+				$('#addLink').on('click', function(e) {
+					e.preventDefault();
+
+					const displayCount = count + 1;
+
+					let $template = $($('#linkTemplate').html());
+
+					$template.attr('id', $template.attr('id') + count);
+					$template.data('index', count);
+
+					$template.find('label').each(function() {
+						$(this).attr('for', $(this).attr('for') + count);
+						$(this).text($(this).text() + ' #' + displayCount);
+					});
+
+					$template.find('input').each(function() {
+						$(this).attr('id', $(this).attr('id') + count);
+						$(this).attr('name', $(this).attr('name') + '[' + count + ']');
+					});
+
+					$template.find('#removeLink').attr('id', $template.find('#removeLink').attr('id') + count);
+
+					$('#linkContainer').append($template);
+
+					$('#removeLink' + count).on('click', function(e) {
+						e.preventDefault();
+
+						if (confirm('Are you sure you want to delete this link?')) {
+							$(this).closest('.linkContainer').remove();
+						}
+					});
+
+					count++;
+
+					return false;
+				});
+
+				$('form').on('submit', function(e) {
+					e.preventDefault();
+
+					let $templateHead = $($('#cherryTreeHead').html());
+
+					$templateHead.find('title').html($('#title').val());
+
+					let $templateBody = $($('#cherryTreeBody').html());
+
+					$templateBody.find('h1').html($('#title').val());
+					$templateBody.find('h2').html($('#tagline').val());
+
+					$('#description').val().split(/\r\n|\r|\n/).forEach(function(str) {
+						if (str.length > 0) {
+							$templateBody.find('main').append('\t');
+							$templateBody.find('main').append($('<p />').html(str));
+							$templateBody.find('main').append('\n\t\t');
+						}
+					});
+
+					$('.linkContainer').each(function() {
+						var index = $(this).data('index');
+
+						const bgColor = $(this).find('#bgColor' + index).val();
+						const textColor = $(this).find('#textColor' + index).val()
+
+						var css = '.btn-' + index + ' {background-color: ' + bgColor + '; color: ' + textColor + ';}' +
+									'\n\t\t\t' +
+									'.btn-' + index + ':hover {background-color: ' + adjustColor(bgColor, 40) + ';}';
+
+						$templateHead.find('style').append('\t');
+						$templateHead.find('style').append(css);
+						$templateHead.find('style').append('\n\t\t');
+
+						$link = $('<a />', {
+							'class': 'ms-btn ms-medium ms-fullwidth btn-' + index,
+							'href': $(this).find('#link' + index).val(),
+							'target': '_blank',
+							'rel': 'noopener'
+						}).html($(this).find('#text' + index).val());
+
+						$templateBody.find('main').append('\t');
+						$templateBody.find('main').append($link);
+						$templateBody.find('main').append('\n\t\t');
+					});
+
+					let codeText = '<!DOCTYPE html>' +
+									'\n<html>' +
+									'\n\t<head>' +
+									'\n\t\t' +
+									$templateHead.html().trim() +
+									'\n\t</head>' +
+									'\n\t<body>' +
+									'\n\t\t' +
+									$templateBody.html().trim() +
+									'\n\t</body>' +
+									'\n</html>';
+
+					$('code').text(codeText);
+					$('pre').stop().slideDown();
+
+					return false;
+				})
+			}(jQuery));
+		</script>
+	</body>
+</html>
