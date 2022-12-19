@@ -1,4 +1,4 @@
-# CherryTree
+# CherryTree Generator
 ## PxO Ink LLC
 
 This generator is designed to quickly create simple HTML and CSS templates to be used with sites like Neocities.
